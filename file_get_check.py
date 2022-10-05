@@ -29,7 +29,6 @@ for current_page in range(len(doc)):
         # data = page_text.extractWORDS()
         # data = page_text.extractBLOCKS()
         # if_word_exist = page_text.search(WORD_TO_FIND, quads=False)
-        
         data = page_text.extractBLOCKS()
         for item in data:
             w1, w2, w3, w4, w5, w6, w7 = item
