@@ -44,7 +44,7 @@ def get_pdf_link(i_html_source: str, search_phrase: str):
         event_title: str = a_item.text
         link_title: str = a_item.get("title")
         if link_title:
-            if link_title.upper() == search_phrase.upper():
+            if search_phrase.upper() in link_title.upper() :
                 pdf_link = a_item.get("href")
 
             if pdf_link is False:
