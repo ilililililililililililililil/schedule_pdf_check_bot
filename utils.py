@@ -1,8 +1,17 @@
 import re, sys
+import datetime as dt
 import fitz, requests
 from numpy import number
 from selenium import webdriver
 from bs4 import BeautifulSoup
+
+
+def get_datetime_now():
+    d = dt.datetime.now()
+    o_ret = str(d.day) + '.' + str(d.month) + '.' + str(d.year)
+    o_ret += '_at_' + str(d.hour) + '_hour'
+
+    return o_ret
 
 
 def get_html_source(url_page, chrome_driver_path):
@@ -51,33 +60,41 @@ def get_pdf_and_save(pdf_link: str, i_filename_to_save: str):
     open(i_filename_to_save, "wb").write(response.content)
 
 
-def pdf_content_check(pdf_file_name: str, word_to_fine: str):
+def pdf_content_check(pdf_file_name: str, word_to_find: str, pic_output_path: str):
     phrase_found = ''
+    o_result = {}
     # To get better resolution
     zoom_x = 3.0  # horizontal zoom
     zoom_y = 3.0  # vertical zoom
     matrix = fitz.Matrix(zoom_x, zoom_y)  # zoom factor 2 in each dimension
 
     doc = fitz.open(pdf_file_name)
-    i = 0
     for current_page in range(len(doc)):
-        i += 1
-        if i == 1:
-            page = doc.load_page(current_page)
-            page_text = page.get_textpage('blocks')
-            # print(page_text.extractBLOCKS())
-            # data = page_text.extractWORDS()
-            # data = page_text.extractBLOCKS()
-            # if_word_exist = page_text.search(WORD_TO_FIND, quads=False)
-            data = page_text.extractBLOCKS()
-            for item in data:
-                w1, w2, w3, w4, w5, w6, w7 = item
+        phrase_found = ''
+        page = doc.load_page(current_page)
+        page_text = page.get_textpage('blocks')
 
-                if word_to_fine.upper() in w5.upper():
-                    phrase_found = 'X'
-                    o_result = str(w5) + 'Got it!'
+        data = page_text.extractBLOCKS()
+        for item in data:
+            w1, w2, w3, w4, w5, w6, w7 = item
 
-    if phrase_found == 'X':
-        pic = page.get_pixmap(matrix=matrix)
-        pic.save('pdf_pic_proof_2_%i.png' % page.number)
+            if 'озеро'.upper() in w5.upper():
+                result = str(w5) + 'Got it!'
+                o_result[word_to_find.upper()] = str(w5) + ' Найдено!'
+
+            if word_to_find.upper() in w5.upper():
+                phrase_found = 'X'
+                result = str(w5) + 'Got it!'
+                o_result[word_to_find.upper()] = str(w5) + ' Найдено!'
+
+            if phrase_found == 'X':
+                png_fname = get_datetime_now() + '.png'
+                # ffile = 'pdf_pic_proof_%i.png' % page.number
+                pic_fname = pic_output_path + '/' + png_fname
+                pic = page.get_pixmap(matrix=matrix)
+                pic.save(pic_fname)
+
     return o_result
+
+
+
