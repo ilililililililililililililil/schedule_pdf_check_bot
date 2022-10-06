@@ -32,5 +32,5 @@ while stop_working != 1:
 
         if key == WORD_TO_FIND.upper():
             stop_working = 1
-    
-    time.sleep(120)
+
+    time.sleep(600)

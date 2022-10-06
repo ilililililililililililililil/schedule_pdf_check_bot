@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 def get_datetime_now():
     d = dt.datetime.now()
     o_ret = str(d.day) + '.' + str(d.month) + '.' + str(d.year)
-    o_ret += '_at_' + str(d.hour) + '_hour'
+    o_ret += '_at_' + str(d.hour) + '.' + str(d.minute)
 
     return o_ret
 
@@ -80,11 +80,11 @@ def pdf_content_check(pdf_file_name: str, word_to_find: str, pic_output_path: st
 
             if 'озеро'.upper() in w5.upper():
                 result = str(w5) + 'Got it!'
-                o_result[word_to_find.upper()] = str(w5) + ' Найдено!'
+                o_result['озеро'.upper()] = str(w5)
 
             if word_to_find.upper() in w5.upper():
                 phrase_found = 'X'
-                result = str(w5) + 'Got it!'
+                # result = str(w5) + 'Got it!'
                 o_result[word_to_find.upper()] = str(w5) + ' Найдено!'
 
             if phrase_found == 'X':
@@ -95,6 +95,3 @@ def pdf_content_check(pdf_file_name: str, word_to_find: str, pic_output_path: st
                 pic.save(pic_fname)
 
     return o_result
-
-
-
