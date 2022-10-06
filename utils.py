@@ -1,5 +1,6 @@
 import re, sys
 import fitz, requests
+from numpy import number
 from selenium import webdriver
 from bs4 import BeautifulSoup
 
@@ -17,11 +18,11 @@ def get_html_source(url_page, chrome_driver_path):
 
 def get_pdf_link(i_html_source: str, search_phrase: str):
 
-    with open("example.html") as fp:
-        soup = BeautifulSoup(fp, "html.parser")
+    # manual file parse for
+    # with open("example.html") as fp:
+    #     soup = BeautifulSoup(fp, "html.parser")
 
-    # soup = BeautifulSoup(i_html_source, "html.parser")
-    # txt_data_array = soup.select_one("div.text_content_block")
+    soup = BeautifulSoup(i_html_source, "html.parser")
     data = soup.find_all("a")
     pdf_link: str = ''
     for a_item in data:
@@ -50,7 +51,13 @@ def get_pdf_and_save(pdf_link: str, i_filename_to_save: str):
     open(i_filename_to_save, "wb").write(response.content)
 
 
-def pdf_content_check(file_name: str, word_to_fine: str):
+def pdf_content_check(pdf_file_name: str, word_to_fine: str):
+    phrase_found = ''
+    # To get better resolution
+    zoom_x = 3.0  # horizontal zoom
+    zoom_y = 3.0  # vertical zoom
+    matrix = fitz.Matrix(zoom_x, zoom_y)  # zoom factor 2 in each dimension
+
     doc = fitz.open(pdf_file_name)
     i = 0
     for current_page in range(len(doc)):
@@ -67,5 +74,10 @@ def pdf_content_check(file_name: str, word_to_fine: str):
                 w1, w2, w3, w4, w5, w6, w7 = item
 
                 if word_to_fine.upper() in w5.upper():
+                    phrase_found = 'X'
                     o_result = str(w5) + 'Got it!'
+
+    if phrase_found == 'X':
+        pic = page.get_pixmap(matrix=matrix)
+        pic.save('pdf_pic_proof_2_%i.png' % page.number)
     return o_result
