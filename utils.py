@@ -7,12 +7,15 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
 
-def get_datetime_now():
+def get_datetime_now(mode):
     d = dt.datetime.now()
-    o_ret = str(d.day) + '.' + str(d.month) + '.' + str(d.year)
-    o_ret += '_at_' + str(d.hour) + '.' + str(d.minute)
-
-    return o_ret
+    o_ret_full = str(d.day) + '.' + str(d.month) + '.' + str(d.year)
+    o_ret_full += '_at_' + str(d.hour) + '.' + str(d.minute)
+    o_ret_small = str(d.hour) + '.' + str(d.minute)
+    if mode == 'full':
+        return o_ret_full
+    else:
+        return o_ret_small
 
 
 def get_html_source(url_page, chrome_driver_path):
@@ -91,7 +94,7 @@ def pdf_content_check(pdf_file_name: str, word_to_find: str, pic_output_path: st
                 o_result[word_to_find.upper()] = str(w5) + ' Найдено!'
 
             if phrase_found == 'X':
-                png_fname = get_datetime_now() + '.png'
+                png_fname = get_datetime_now('full') + '.png'
                 # ffile = 'pdf_pic_proof_%i.png' % page.number
                 pic_fname = pic_output_path + '/' + png_fname
                 pic = page.get_pixmap(matrix=matrix)
