@@ -131,3 +131,5 @@ dmypy.json
 /pics/
 /pdfs/
 /htmls/
+
+config_bot.py
