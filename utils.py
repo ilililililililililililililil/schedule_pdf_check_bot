@@ -3,6 +3,7 @@ import datetime as dt
 import fitz, requests
 from numpy import number
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
 
@@ -15,7 +16,9 @@ def get_datetime_now():
 
 
 def get_html_source(url_page, chrome_driver_path):
-    driver = webdriver.Chrome(chrome_driver_path)
+    options = Options()
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(chrome_options=options, executable_path=chrome_driver_path)
     driver.get(url_page)
     o_html_source = ''
     o_html_source = driver.page_source
